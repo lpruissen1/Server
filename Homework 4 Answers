@@ -1,0 +1,77 @@
+Lee Pruissen
+CS 472 - HW4
+
+Windows 10
+Python: 3.5.2
+README
+
+Below are the answered question 1-6. I implemented a server.conf file to manage the ways the server is allowed to create
+data connections. There is now a configServer() function that reads the file and pulls the relevant information. The server
+will not run if none of the data connection are active. I was not able to implement a log check due to time constraints for
+question 6 unfortunatly. If I were to implement one I would choose the multiple login attempts from the same user.
+
+
+Question 1)
+
+In terms of security a passive connection is the more secure of the two. In a worst case scenerio an individual can be listening
+to the client's connection to the server, and when the client sends a PORT command with a host/port combo a malicious server
+can hijack the data connection. That allows the the malicious server to either receive private files from the client or send
+files containing malicious code to the client. Whether it's a STOR or RETR command the results of a hijacked port data connection
+is never good. A server can also hijack a PASV command from the server which is a lot better for the client in terms of security.
+The malicious client in this case can receive private files from the server as well as send files containing malicious code.
+In term of security PASV mode connection will be more secure for client connection in general becasue it only needs to listen to a
+port on a host that it is already connected to. There can also be security features added to passive connetion on client side
+by having them verify the host info sent in the PASV response matches up to the host on the communication connection.
+
+Question 2
+
+Logging is key when it comes to being able to detect an attack on a system. A log will identify any events or calls made that
+are different that normal operating behavior. If logging in a system is good, after an attack the logs will reveal step by step
+the actions taken by the malicious entity. This allows the security analyst the see the steps taken to gain access to the
+system. The next step that can be taken is a log monitor that analyzes the log and if any unexpected behavior happens
+the security analyst can be notified that an attack is happening in real time.
+
+Question 3
+
+The issue with concurrent server and log files is that with multiple sessions going at once there needs to be a way to
+differentiate between the sessions when im comes to logging the commands. If one session logs in and starts executing
+commands while another session attempts to login but fails it would look confusing to see in the log file the failed attempt
+to login from the second session but normal commands executing from the original successful login. On way to solve this
+issue is to have a session ID on the log line or create a new log file for each session. I think the former is the better
+solution
+
+Question 4
+
+TLS (Transport Layer Security) is a sublayer that is added to the TCP/IP internet protocol between the application and
+transportation layers. It allows the application layer data to be encrypted before it is sent through the transport layer.
+Adding TLS to your model will increase security and data integrity of the communication. If TLS is in implicit mode the
+server and client will perform all communication over a TLS connection and the data will be encrypted. The implicit mode
+connection does need a dedicated port to communicate over although. On the other hand with explicit TLS, the communication
+will only be encrypted if the client specifies that the connection is to use TLS. The tradeoffs made are in terms of speed
+and resource management. It takes computational resources and time to encrypt data sent over ftp. If the file contents are
+not sensitive it would be a better idea to just encrpty the communication connection such that the username and password
+are encrypted. You would then choose explicit TLS because you can choose that connection are encrypted and what are not. On
+the other hand if both the files and communication in need to encryption then one would choose and implicit TLS connection
+because it starts will encryption from the begginning.
+
+Question 5
+
+I think that the three person method of FTP is insecure because it can allow the client dictate who the server connects
+to through the use of the port command. By flooding the server with mutliple, incorrect, port commands the client can attempt
+to force the server to make a connection to a malicious host that can steal or put information on the server. The server
+of course has a lot of power as to who they want to set up data connection with. For instance the server can reject all
+PORT or EPRT commands whose host data does not match the host of the communication connection the command was sent over.
+Another issue with the tree way connection is that fact that the two hosts connected over a data socket have to interact with
+one another over a a middle man rather then directly. This can cause issue with state synchronization
+
+Question 6
+I do not have to many system event being logged currently but there are a few I could add in order to increase security
+on the server side. If there are multiple failed login attempts with one username I could log that issue and then lock
+username from logging in until the issue is resolved. Another logging event I could track is the movement of clients around
+the servers file directory. One could attempt to get into an secured file location in order to create a backdoor
+to the server or any number of malicious actions. Another event that can easily be logged is that if a port commands host
+does not match the host over the data connection that can be logged, the IP stored as malicious, and close the communication
+connection. The server has a lot of control in the conversation which gives it a lot of power in terms of security and
+error handling.
+
+

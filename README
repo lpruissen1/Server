@@ -1,0 +1,70 @@
+Lee Pruissen
+CS 472
+HW 3 - FTP Server
+
+I am very happy with how this server turned out! It took a lot less time to write which can be chalked up to two different factors. One, is that I didnt have to learn the nuances of the FTP
+protocol this time around. Two, the server side implementation has more control in the conversation and there are less conditions to handle then compares to the client. I do have all my the
+commands implemented and is compatable with the FTP client from homework 2. The one thing I was not able to get is a connection from another client other then my own. I tried multiple IP
+addresses in multiple enviornments (Virtualbox running ubuntu 16.04/ Windows 10) as well as multilpe ftp clients (ftptest.com / ftp client built into windows). All in all I am please with
+how this homework turned out.
+
+Included in the zip file:
+
+1) README
+2) server.py
+3) log.txt (from session with my ftp client)
+4) acct.txt (The account file)
+
+
+There are two command line arugments that need to be passed in to start this server
+1) log file name
+2) Port number to start listening on
+
+To run:
+    Enter the two command line arguments
+    Enter a valid username and password
+          User/Pass
+        - Lee/Lee1
+        - Bob/Bob1
+        - Steve/Steve1
+I will include a log session from my own ftp client
+Log walk through:
+
+1) Invalid Login
+2) Valid Login
+3) Help
+4) Syst
+5) Pwd
+6) Cd ..
+7) Pwd
+8) Cd server
+9) List - passive connection
+10) Retr - extended passive connection
+11) Stor - port connection
+12) List - extended port connection
+14) quit
+
+Question 1) I do no think the security of data through ftp is secure at all. There is some light security in terms of permission with a login flow but the information passed is not encrypted
+and anyone has access to the username/password. That means anyone can have access to your server with only 2 pieces of open information. I would presume that BitTorrent is also not very secure
+due the distrited nature of the protocol. Your IP address is known to evreyone in your "swarm" (group of connected hosts) and if any one of those are malicious then they could potentially
+casue harm. SMTP as well does not seem to have very much data security features as there is not sender verification to make sure an email is coming from a trustworthy web server. I argue that
+FTP is better then both in terms of data security although. FTP forces you to create an extra data connection if one wants to transfer information between sender and reciever. The host IP and port
+must be specified between the host and client to make sure that the two are communicating with the correct machine. This is better then SMTP because any sender could send malicous files without any
+true checking and BitTorrent because you only need to trust one host rather then a large mass of hosts with your IP address and port information.
+
+Quesiton 2) Yes, they could break into my server from what I believe multiple way with some more feasible then others. One thing a hacker could simply do is try to brute force the login flow
+since there is no multiple login attempt checks. Another way is to send incorrect port and eprt commands from the client to the server that contains foreign IP address and port numbers. This
+would allow someone to send file contents to a computer that does not have permission to that file system. Another way to to take the PASV and EPSV resposnes and relay them to a computer that
+does not have a connection to the Server. With the response of those commands another computer could set up a connection to the open socket on the server and send/recieve files as they please.
+
+Question 3) I think FTP is a little weird as a application level protocol. It contains some information that one would believe to be located in the transport level such as port information on
+both the client and server ends. It also makes you connect two connection to the server if one wants to send/receive any information from it. This adds a level of complexity but allows the user
+to have more control of the system in general. It allows the user to send commands as it is also sending/receiving data, allows for multiple data connection, allows the server to control when
+it is ready to send/receive data. I think the worst thing about ftp is the lack of encryption on its user/pass commands as well as the data being transfer. This can be easily fixed by using the
+SFTP protocol which is FTP with a level of encrytion on top of it.
+
+Question 4) I do not think it is an outright challenge to make FTP a one connection type of protocol but it will reduce the flexibility of the protocol to make multiple connection to possibly
+multiple clients. To make it use one channel it is important to manage the state even more then before since there is one connection between the two. WIth two connection the control connection
+handles the state, location, and error handling of the protocol. With the data thrown into that one channel is it important to make sure the data is sent only when the server is ready to accept a
+request or take data to write to file. Issues could possibly arise when multiple messages are being sent down the channel at once which could mess up the state synchronization between the client
+and the server.
